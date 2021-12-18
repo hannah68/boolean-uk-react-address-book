@@ -1,7 +1,27 @@
 import { useState } from "react";
 function CreateContactForm() {
   // [TODO] Write form handlers here and POST requests here...
+  const [contactInfo, setContactInfo] = useState({
+    firstName:"",
+    lastName:"",
+    blockContact:false,
+    addressId:null
+  })
 
+  const [address, setAddress] = useState ({
+    city:"",
+    street:"",
+    postCode:"",
+
+  })
+  const handleChange = (e) =>{
+    const name = e.target.name
+    const value = e.target.value
+  }
+  const handleChangeAddress = (e) =>{
+    const name = e.target.name
+    const value = e.target.value
+  }
   return (
     <form className="form-stack light-shadow center contact-form">
       <h1>Create Contact</h1>
@@ -9,12 +29,16 @@ function CreateContactForm() {
       <input 
         id="first-name-input" 
         name="firstName" 
-        type="text" />
+        type="text" 
+        value={contactInfo.firstName} 
+        onChange={handleChange}/>
       <label htmlFor="last-name-input">Last Name:</label>
       <input 
         id="last-name-input" 
         name="lastName" 
-        type="text" />
+        type="text" 
+        value={contactInfo.lastName} 
+        onChange={handleChange}/>
       <label htmlFor="street-input">Street:</label>
       <input 
         id="street-input" 
@@ -34,7 +58,9 @@ function CreateContactForm() {
         <input 
           id="block-checkbox" 
           name="blockContact" 
-          type="checkbox" 
+          type="checkbox"
+          value={contactInfo.blockContact} 
+          onChange={handleChange} 
         />
         <label htmlFor="block-checkbox">Block</label>
       </div>
