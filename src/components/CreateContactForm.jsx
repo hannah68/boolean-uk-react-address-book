@@ -1,6 +1,11 @@
-import { useState } from "react";
-function CreateContactForm() {
-  // [TODO] Write form handlers here and POST requests here...
+import { useState, useEffect } from "react";
+function CreateContactForm(props) {
+  const [submit, setSubmit] = useState(false);
+  // const {refresh, setRefresh} = props;
+  const {editContact} = props;
+
+  console.log(editContact)
+
   const [contactInfo, setContactInfo] = useState({
     firstName:"",
     lastName:"",
@@ -12,19 +17,101 @@ function CreateContactForm() {
     city:"",
     street:"",
     postCode:"",
+  });
 
-  })
+  useEffect(() => {
+    if(submit){
+      console.log('submit', submit);
+      postAddress()
+    }
+    setSubmit(false)
+  }, [submit, address])
+
+  // useEffect for postContactInfo==============
+  useEffect(() => {
+    if(contactInfo.addressId === null) return;
+    postContactInfo();
+    resetForm();
+    refreshPage();
+    // setRefresh(!refresh);
+  }, [contactInfo])
+
+  // refresh page====================
+  const refreshPage = () => {
+    window.location.reload()
+  }
+
+  // fetch post contact================
+  const postContactInfo = () => {
+    try{
+      fetch('http://localhost:3030/contacts', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(contactInfo)
+      })
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
+  // post fetch address==================
+  const postAddress = () => {
+    try{
+      fetch('http://localhost:3030/addresses', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(address)
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('data', data);
+        setContactInfo({...contactInfo, addressId: data.id})
+      })
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
+  // reset form===================
+  const resetForm = () => {
+    contactInfo.firstName = '';
+    contactInfo.lastName = '';
+    contactInfo.blockContact = false;
+    contactInfo.addressId = null;
+
+    address.city = '';
+    address.street =  '';
+    address.postCode= '';
+  }
+
+  // submit handler=================
+  const submitHandler = (e) => {
+    e.preventDefault();
+    setSubmit(true);
+  }
+
   const handleChange = (e) =>{
     const name = e.target.name
     const value = e.target.value
+    setContactInfo({...contactInfo, [name] : value});
   }
+
   const handleChangeAddress = (e) =>{
     const name = e.target.name
     const value = e.target.value
+    setAddress({...address, [name] : value});
   }
+
+
   return (
-    <form className="form-stack light-shadow center contact-form">
-      <h1>Create Contact</h1>
+    <form className="form-stack light-shadow center contact-form" onSubmit={submitHandler}>
+      <h1>{editContact ? 'Edit contact' : 'Create contact'}</h1>
       <label htmlFor="first-name-input">First Name:</label>
       <input 
         id="first-name-input" 
@@ -43,17 +130,25 @@ function CreateContactForm() {
       <input 
         id="street-input" 
         name="street" 
-        type="text" />
+        type="text"
+        value={address.street} 
+        onChange={handleChangeAddress}/>
       <label htmlFor="city-input">City:</label>
       <input 
         id="city-input" 
         name="city" 
-        type="text" />
+        type="text"
+        value={address.city} 
+        onChange={handleChangeAddress}
+        />
       <label htmlFor="post-code-input">Post Code:</label>
       <input 
         id="post-code-input" 
         name="postCode" 
-        type="text" />
+        type="text"
+        value={address.postCode} 
+        onChange={handleChangeAddress}
+        />
       <div className="checkbox-section">
         <input 
           id="block-checkbox" 

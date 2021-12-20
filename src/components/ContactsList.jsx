@@ -1,5 +1,17 @@
 function ContactsList(props) {
-  const { contacts, hideForm, setHideForm } = props;
+  const { contacts, hideForm, setHideForm, setEditContact, setViewContact} = props;
+
+  const getContactId = (contact) => {
+    // setHideForm(!hideForm);
+    console.log('contact', contact)
+    setEditContact(contact)
+  }
+
+  const viewContact = (contact) => {
+    setViewContact(contact)
+  }
+
+
 
   return (
     <aside className="contacts-section light-shadow">
@@ -12,7 +24,7 @@ function ContactsList(props) {
           {hideForm ? "Create" : "Cancel"}
         </button>
       </header>
-      <ul>
+      <ul className="contacts-list">
         {contacts.map((contact, index) => {
           const { firstName, lastName, address } = contact;
 
@@ -21,8 +33,10 @@ function ContactsList(props) {
               <h3>
                 {firstName} {lastName}
               </h3>
+              <button className="button grey" onClick={() => viewContact(contact)}>View</button>
+              <button className="button blue" onClick={() => getContactId(contact)}>Edit</button>
               <p>
-                {address.street}, {address.postCode}
+                {address.street},{address.postCode}
               </p>
             </li>
           );

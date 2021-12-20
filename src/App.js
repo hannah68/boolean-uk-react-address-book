@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import ContactsList from "./components/ContactsList";
+import ContactView from "./components/ContactView";
 import CreateContactForm from "./components/CreateContactForm";
 import "./styles/styles.css";
 
 export default function App() {
   const [contacts, setContacts] = useState([]);
   const [hideForm, setHideForm] = useState(true);
-
-  // [TODO] Write a useEffect to fetch contacts here...
+  // const [refresh, setRefresh] = useState(false);
+  const [editContact, setEditContact] = useState(null);
+  const [viewContact, setViewContact] = useState(null);
+  
   useEffect(() => {
     const fetchContact = async() => {
       try{
@@ -20,9 +23,7 @@ export default function App() {
         console.log('error', error);
       }
     }
-
     fetchContact();
-
   }, [])
 
   return (
@@ -31,8 +32,17 @@ export default function App() {
         contacts={contacts}
         hideForm={hideForm}
         setHideForm={setHideForm}
+        setEditContact={setEditContact}
+        setViewContact={setViewContact}
       />
-      <main>{!hideForm && <CreateContactForm />}</main>
+      <main>
+        {!hideForm && <CreateContactForm 
+          editContact={editContact}
+          viewContact={viewContact}/>}
+
+        {hideForm && viewContact && <ContactView 
+          viewContact={viewContact}/>}
+      </main>
     </>
   );
 }
