@@ -19,6 +19,7 @@ function CreateContactForm(props) {
     postCode:"",
   });
 
+  // use effect for post Address===================
   useEffect(() => {
     if(submit){
       console.log('submit', submit);
@@ -27,19 +28,21 @@ function CreateContactForm(props) {
     setSubmit(false)
   }, [submit, address])
 
-  // useEffect for postContactInfo==============
+
+  // useEffect for post ContactInfo==============
   useEffect(() => {
     if(contactInfo.addressId === null) return;
     postContactInfo();
     resetForm();
     refreshPage();
-    // setRefresh(!refresh);
   }, [contactInfo])
+
 
   // refresh page====================
   const refreshPage = () => {
     window.location.reload()
   }
+
 
   // fetch post contact================
   const postContactInfo = () => {
@@ -74,7 +77,7 @@ function CreateContactForm(props) {
       })
     }
     catch(error){
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -96,22 +99,30 @@ function CreateContactForm(props) {
     setSubmit(true);
   }
 
+  // handle change inputs=============
   const handleChange = (e) =>{
     const name = e.target.name
     const value = e.target.value
     setContactInfo({...contactInfo, [name] : value});
   }
 
+  // handle change address=============
   const handleChangeAddress = (e) =>{
     const name = e.target.name
     const value = e.target.value
     setAddress({...address, [name] : value});
   }
 
+  // handle change blockcontact checkbox=============
+  const handleCheckboxChange = (e) => {
+    const name = e.target.name
+    const checked = e.target.checked
+    setContactInfo({ ...contactInfo, [name]: checked});
+  }
 
   return (
     <form className="form-stack light-shadow center contact-form" onSubmit={submitHandler}>
-      <h1>{editContact ? 'Edit contact' : 'Create contact'}</h1>
+      <h1>Create Contact</h1>
       <label htmlFor="first-name-input">First Name:</label>
       <input 
         id="first-name-input" 
@@ -154,7 +165,7 @@ function CreateContactForm(props) {
           id="block-checkbox" 
           name="blockContact" 
           type="checkbox"
-          value={contactInfo.blockContact} 
+          value={handleCheckboxChange.blockContact} 
           onChange={handleChange} 
         />
         <label htmlFor="block-checkbox">Block</label>
